@@ -7,6 +7,7 @@ import Cheque.Update exposing (Msg)
 import Svg exposing (Svg, svg, rect, text', text, foreignObject, defs, g, line, tspan)
 import Svg.Attributes as Attributes exposing (id, fill, height, width, x, y, viewBox, fontFamily, strokeWidth, fontSize, stroke, x1, y1, x2, y2, fontWeight, strokeOpacity, baselineShift, textAnchor)
 import Styles.Background as Background
+import Helpers.Misc as Helper
 
 
 chequeView : Model -> Html Msg
@@ -74,7 +75,9 @@ amount model =
     g [ id "amount" ]
         [ text' [ x "550", y "131", fontSize "18px" ] [ text "$" ]
         , rect [ x "565", y "115", width "100", height "20", strokeWidth "1px", stroke "black", fill "white", strokeOpacity "0.5" ] []
-        , text' [ x "660", y "130", textAnchor "end", fontFamily "monospace" ] [ text "1,550.00" ]
+        , model.amount.value
+            |> Maybe.map (\amount -> text' [ x "660", y "130", textAnchor "end", fontFamily "monospace" ] [ text <| Helper.moneyFormat amount ])
+            |> Maybe.withDefault (text "")
         ]
 
 
