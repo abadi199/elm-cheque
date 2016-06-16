@@ -8,6 +8,8 @@ import Svg exposing (Svg, svg, rect, text', text, foreignObject, defs, g, line, 
 import Svg.Attributes as Attributes exposing (id, fill, height, width, x, y, viewBox, fontFamily, strokeWidth, fontSize, stroke, x1, y1, x2, y2, fontWeight, strokeOpacity, baselineShift, textAnchor)
 import Styles.Background as Background
 import Helpers.Misc as Helper
+import Helpers.Number as Number
+import String
 
 
 chequeView : Model -> Html Msg
@@ -66,7 +68,7 @@ payableTo model =
         [ text' [ x "35", y "120" ] [ text "PAY TO THE" ]
         , text' [ x "35", y "135" ] [ text "ORDER OF" ]
         , line [ x1 "105", y1 "135", x2 "540", y2 "135", strokeWidth "1px", stroke "black" ] []
-        , text' [ x "115", y "130", fontFamily "monospace" ] [ text "Some Company Name" ]
+        , text' [ x "115", y "130", fontFamily "monospace" ] [ text <| Maybe.withDefault "" model.payableTo.value ]
         ]
 
 
@@ -83,16 +85,36 @@ amount model =
 
 amountWords : Model -> Svg msg
 amountWords model =
-    g [ id "amountWords" ]
-        [ line [ x1 "35", y1 "170", x2 "600", y2 "170", strokeWidth "1px", stroke "black" ] []
-        , text' [ x "45", y "165", fontFamily "monospace" ]
-            [ text "ONE THOUSAND FIVE HUNDREDS AND FIFTY "
-            , tspan [ baselineShift "super", fontSize "8px" ] [ text "0" ]
-            , text "/"
-            , tspan [ baselineShift "-25%", fontSize "8px" ] [ text "100" ]
+    let
+        maybeNumber =
+            model.amount.value
+                |> Maybe.map (String.toInt >> Result.toMaybe)
+                |> Helper.join
+
+        renderWords =
+            case maybeNumber of
+                Nothing ->
+                    text ""
+
+                Just number ->
+                    g []
+                        [ text' [ x "45", y "165", fontFamily "monospace" ]
+                            [ number
+                                |> Number.toWords
+                                |> String.toUpper
+                                |> text
+                            , text " "
+                            , tspan [ baselineShift "super", fontSize "8px" ] [ text "0" ]
+                            , text "/"
+                            , tspan [ baselineShift "-25%", fontSize "8px" ] [ text "100" ]
+                            ]
+                        ]
+    in
+        g [ id "amountWords" ]
+            [ line [ x1 "35", y1 "170", x2 "600", y2 "170", strokeWidth "1px", stroke "black" ] []
+            , text' [ x "605", y "170" ] [ text "DOLLARS" ]
+            , renderWords
             ]
-        , text' [ x "605", y "170" ] [ text "DOLLARS" ]
-        ]
 
 
 memo : Model -> Svg msg

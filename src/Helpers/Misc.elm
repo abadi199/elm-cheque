@@ -4,6 +4,8 @@ module Helpers.Misc
         , toNumberInputModel
         , toStringInputModel
         , moneyFormat
+        , join
+        , get
         )
 
 import Html.Events exposing (on, keyCode)
@@ -66,3 +68,18 @@ partitionStep groupSize step xs =
             group :: partitionStep groupSize step xs'
         else
             [ group ]
+
+
+join : Maybe (Maybe a) -> Maybe a
+join mx =
+    case mx of
+        Just x ->
+            x
+
+        Nothing ->
+            Nothing
+
+
+get : Int -> List String -> String
+get i list =
+    list |> List.drop i |> List.head |> Maybe.withDefault ""
