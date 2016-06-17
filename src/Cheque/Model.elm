@@ -35,7 +35,7 @@ type alias Model =
     , state : Field String
     , country : Field String
     , zipCode : Field String
-    , date : Maybe Date
+    , date : Field String
     }
 
 
@@ -80,7 +80,7 @@ init options =
     , state = { id = "", label = Just "State", value = Nothing, hasFocus = False }
     , country = { id = "", label = Just "Country", value = Nothing, hasFocus = False }
     , zipCode = { id = "", label = Just "Zip Code", value = Nothing, hasFocus = False }
-    , date = Nothing
+    , date = { id = "", label = Just "Date", value = Nothing, hasFocus = False }
     }
 
 

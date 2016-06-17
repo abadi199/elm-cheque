@@ -1,12 +1,13 @@
 module Helpers.Number exposing (toWords)
 
 import Helpers.Misc exposing (get, getString)
-import String
 
 
 toWords : Int -> String
 toWords number =
-    if number < 100 then
+    if number == 0 then
+        "zero"
+    else if number < 100 then
         convertNN number
     else
         convertNNN number
@@ -86,7 +87,12 @@ convertNNN number =
                 |> (++) space
                 |> (++) (toWords denomDigit)
                 |> flip (++) space
-                |> flip (++) (toWords denomRemainder)
+                |> flip (++)
+                    (if denomRemainder == 0 then
+                        ""
+                     else
+                        toWords denomRemainder
+                    )
 
 
 space : String

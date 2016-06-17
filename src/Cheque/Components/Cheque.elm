@@ -49,7 +49,7 @@ date model =
     g [ id "date" ]
         [ text' [ x "450", y "90" ] [ text "DATE" ]
         , line [ x1 "490", y1 "90", x2 "620", y2 "90", stroke "black", strokeWidth "1px" ] []
-        , text' [ x "515", y "85", fontFamily "monospace" ] [ text "06/10/2016" ]
+        , text' [ x "515", y "85", fontFamily "monospace" ] [ text <| Maybe.withDefault "" <| model.date.value ]
         ]
 
 

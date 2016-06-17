@@ -33,6 +33,7 @@ import Cheque.Components.Cheque as Cheque
 import Helpers.Misc as Helper
 import Input.Text as Text
 import Input.Number as Number
+import Date exposing (Date)
 
 
 {-| A view function that will render the whole form fields including the card.
@@ -51,8 +52,9 @@ form : Model -> Html Msg
 form model =
     div [ class "elm-card" ]
         [ chequeView model
-        , amountInput "ChequeAmount" model
+        , amountInput "ChequeAmount" [] model
         , payableToInput "ChequePayableTo" [] model
+        , dateInput "ChequeDate" [] model
         ]
 
 
@@ -68,8 +70,8 @@ Example:
         ]
 
 -}
-amountInput : String -> Model -> Html Msg
-amountInput id model =
+amountInput : String -> List (Attribute Number.Msg) -> Model -> Html Msg
+amountInput id attributes model =
     App.map UpdateAmount
         (viewIntField model.options
             { id = id
@@ -77,6 +79,7 @@ amountInput id model =
             , maxValue = Nothing
             , minValue = Nothing
             }
+            attributes
             model.amount
         )
 
@@ -100,6 +103,16 @@ payableToInput id attributes model =
             (Text.defaultOptions id)
             attributes
             model.payableTo
+        )
+
+
+dateInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+dateInput id attributes model =
+    App.map UpdateDate
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.date
         )
 
 
@@ -142,20 +155,29 @@ viewStringField options textOptions attributes field =
             stringInput
 
 
-viewIntField : Options -> Number.Options -> Field String -> Html Number.Msg
-viewIntField options numberInputOptions field =
-    viewIntFieldWithAttributes options
-        numberInputOptions
-        [ placeholder options field ]
-        field
+viewDateField : Options -> Text.Options -> List (Attribute Text.Msg) -> Field Date -> Html Text.Msg
+viewDateField options textOptions attributes field =
+    let
+        stringInput =
+            Text.input textOptions
+                (List.append attributes [ placeholder options field ])
+                (Helper.toDateInputModel field)
+    in
+        if options.showLabel then
+            p []
+                [ viewLabel textOptions.id options field
+                , stringInput
+                ]
+        else
+            stringInput
 
 
-viewIntFieldWithAttributes : Options -> Number.Options -> List (Attribute Number.Msg) -> Field String -> Html Number.Msg
-viewIntFieldWithAttributes options numberInputOptions attributes field =
+viewIntField : Options -> Number.Options -> List (Attribute Number.Msg) -> Field String -> Html Number.Msg
+viewIntField options numberInputOptions attributes field =
     let
         input =
             Number.input numberInputOptions
-                attributes
+                (List.append attributes [ placeholder options field ])
                 (Helper.toNumberInputModel field)
     in
         if options.showLabel then

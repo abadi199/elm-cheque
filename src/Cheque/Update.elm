@@ -28,7 +28,7 @@ type Msg
     | UpdateState Text.Msg
     | UpdateCountry Text.Msg
     | UpdateZipCode Text.Msg
-    | UpdateDate Date
+    | UpdateDate Text.Msg
 
 
 {-| The Elm Architect's update function.
@@ -79,8 +79,8 @@ update msg model =
             , Cmd.none
             )
 
-        UpdateDate date ->
-            ( { model | date = Just date }
+        UpdateDate textMsg ->
+            ( { model | date = updateStringInput textMsg model.date }
             , Cmd.none
             )
 
@@ -101,6 +101,21 @@ updateStringInput textMsg field =
     in
         field
             |> Helper.toStringInputModel
+            |> Text.update textMsg
+            |> toField
+
+
+updateDateInput : Text.Msg -> Field Date -> Field Date
+updateDateInput textMsg field =
+    let
+        toField numberInputModel =
+            { field
+                | value = numberInputModel.value |> Date.fromString |> Result.toMaybe
+                , hasFocus = numberInputModel.hasFocus
+            }
+    in
+        field
+            |> Helper.toDateInputModel
             |> Text.update textMsg
             |> toField
 

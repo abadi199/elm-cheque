@@ -3,6 +3,7 @@ module Helpers.Misc
         ( onKeyDown
         , toNumberInputModel
         , toStringInputModel
+        , toDateInputModel
         , moneyFormat
         , join
         , get
@@ -16,6 +17,7 @@ import Cheque.Model exposing (Model, Field)
 import Input.Number as Number
 import Input.Text as Text
 import String
+import Date exposing (Date)
 
 
 onKeyDown : (Int -> msg) -> Attribute msg
@@ -31,6 +33,11 @@ toNumberInputModel =
 toStringInputModel : Field String -> Text.Model
 toStringInputModel field =
     { value = field.value |> Maybe.withDefault "", hasFocus = field.hasFocus }
+
+
+toDateInputModel : Field Date -> Text.Model
+toDateInputModel field =
+    { value = field.value |> Maybe.map toString |> Maybe.withDefault "", hasFocus = field.hasFocus }
 
 
 moneyFormat : String -> String
