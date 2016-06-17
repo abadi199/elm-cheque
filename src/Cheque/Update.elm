@@ -40,7 +40,7 @@ update msg model =
             ( model, Cmd.none )
 
         UpdateAmount numberMsg ->
-            ( { model | amount = Debug.log "after" <| updateNumberInput numberMsg (Debug.log "before" model.amount) }
+            ( { model | amount = updateNumberInput numberMsg model.amount }
             , Cmd.none
             )
 

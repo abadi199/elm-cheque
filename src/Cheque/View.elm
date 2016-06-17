@@ -72,7 +72,11 @@ amountInput : String -> Model -> Html Msg
 amountInput id model =
     App.map UpdateAmount
         (viewIntField model.options
-            (Number.defaultOptions id)
+            { id = id
+            , maxLength = Just 10
+            , maxValue = Nothing
+            , minValue = Nothing
+            }
             model.amount
         )
 

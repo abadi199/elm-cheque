@@ -6,6 +6,7 @@ module Helpers.Misc
         , moneyFormat
         , join
         , get
+        , getString
         )
 
 import Html.Events exposing (on, keyCode)
@@ -80,6 +81,11 @@ join mx =
             Nothing
 
 
-get : Int -> List String -> String
-get i list =
+get : a -> Int -> List a -> a
+get default i list =
+    list |> List.drop i |> List.head |> Maybe.withDefault default
+
+
+getString : Int -> List String -> String
+getString i list =
     list |> List.drop i |> List.head |> Maybe.withDefault ""

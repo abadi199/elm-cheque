@@ -1,21 +1,20 @@
 module Helpers.Number exposing (toWords)
 
-import Helpers.Misc exposing (get)
+import Helpers.Misc exposing (get, getString)
+import String
 
 
 toWords : Int -> String
 toWords number =
     if number < 100 then
         convertNN number
-    else if number < 1000 then
-        convertNNN number
     else
-        ""
+        convertNNN number
 
 
 to19 : List String
 to19 =
-    [ "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" ]
+    [ "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" ]
 
 
 tens : List String
@@ -25,14 +24,14 @@ tens =
 
 denom : List String
 denom =
-    [ "hundred", "thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion", "undecillion", "duodecillion", "tredecillion", "quattuordecillion", "sexdecillion", "septendecillion", "octodecillion", "novemdecillion", "vigintillion" ]
+    [ "hundred", "thousand", "million", "billion" ]
 
 
 convertNN : Int -> String
 convertNN number =
     if number < 20 then
-        get number to19
-    else
+        getString number to19
+    else if number < 100 then
         let
             tensDigit =
                 floor (number / 10) - 2
@@ -41,12 +40,14 @@ convertNN number =
                 number % 10
 
             tensWord =
-                get tensDigit tens
+                getString tensDigit tens
         in
             if singleDigit == 0 then
                 tensWord
             else
-                tensWord ++ " " ++ get singleDigit to19
+                tensWord ++ " " ++ getString singleDigit to19
+    else
+        ""
 
 
 convertNNN : Int -> String
@@ -54,12 +55,40 @@ convertNNN number =
     let
         hundredsDigit =
             number // 100
+
+        denomLength =
+            List.length denom
+
+        denomNumber =
+            [0..denomLength]
+                |> List.map ((^) 1000)
+
+        denomIndex =
+            denomNumber
+                |> List.filter (flip (<=) number)
+                |> List.length
+                |> flip (-) 1
+
+        denomDigit =
+            number // get 0 denomIndex denomNumber
+
+        denomRemainder =
+            number % get 0 denomIndex denomNumber
     in
         if number < 1000 then
-            get hundredsDigit to19
-                ++ " "
-                ++ get 0 denom
-                ++ " "
+            getString hundredsDigit to19
+                ++ space
+                ++ getString 0 denom
+                ++ space
                 ++ convertNN (number - (100 * hundredsDigit))
         else
-            ""
+            getString denomIndex denom
+                |> (++) space
+                |> (++) (toWords denomDigit)
+                |> flip (++) space
+                |> flip (++) (toWords denomRemainder)
+
+
+space : String
+space =
+    " "
