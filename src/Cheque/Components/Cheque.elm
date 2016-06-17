@@ -122,6 +122,7 @@ memo model =
     g [ id "memo" ]
         [ text' [ x "30", y "245" ] [ text "MEMO" ]
         , line [ x1 "75", y1 "245", x2 "370", y2 "245", stroke "black", strokeWidth "1px" ] []
+        , text' [ x "85", y "240", fontFamily "monospace" ] [ text <| Maybe.withDefault "" <| model.memo.value ]
         ]
 
 
@@ -135,12 +136,31 @@ signature model =
 name : Model -> Svg msg
 name model =
     g [ id "name" ]
-        [ text' [ x "30", y "35", fontSize "14px", fontWeight "bold" ] [ text "Abadi Kurniawan" ] ]
+        [ text' [ x "30", y "35", fontSize "14px", fontWeight "bold" ] [ text <| Maybe.withDefault "[Your Name]" <| model.name.value ] ]
 
 
 address : Model -> Svg msg
 address model =
-    g [ id "address" ]
-        [ text' [ x "30", y "50" ] [ text "13 Elm St." ]
-        , text' [ x "30", y "65" ] [ text "St. Louis, MO 63112" ]
-        ]
+    let
+        address =
+            Maybe.withDefault "[Your Address]" model.address.value
+
+        city =
+            Maybe.withDefault "[City]" model.city.value
+
+        state =
+            Maybe.withDefault "[State]" model.state.value
+
+        zipCode =
+            Maybe.withDefault "[ZipCode]" model.zipCode.value
+
+        comma =
+            if city /= "" && (state /= "" || zipCode /= "") then
+                ", "
+            else
+                ""
+    in
+        g [ id "address" ]
+            [ text' [ x "30", y "50" ] [ text address ]
+            , text' [ x "30", y "65" ] [ text <| city ++ comma ++ state ++ " " ++ zipCode ]
+            ]

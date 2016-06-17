@@ -55,6 +55,12 @@ form model =
         , amountInput "ChequeAmount" [] model
         , payableToInput "ChequePayableTo" [] model
         , dateInput "ChequeDate" [] model
+        , nameInput "ChequeName" [] model
+        , addressInput "ChequeAddress" [] model
+        , cityInput "ChequeCity" [] model
+        , stateInput "ChequeState" [] model
+        , zipCodeInput "ChequeZipCode" [] model
+        , memoInput "ChequeMemo" [] model
         ]
 
 
@@ -113,6 +119,68 @@ dateInput id attributes model =
             (Text.defaultOptions id)
             attributes
             model.date
+        )
+
+
+nameInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+nameInput id attributes model =
+    App.map UpdateName
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.name
+        )
+
+
+addressInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+addressInput id attributes model =
+    App.map UpdateAddress
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.address
+        )
+
+
+cityInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+cityInput id attributes model =
+    App.map UpdateCity
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.city
+        )
+
+
+stateInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+stateInput id attributes model =
+    App.map UpdateState
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.state
+        )
+
+
+zipCodeInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+zipCodeInput id attributes model =
+    App.map UpdateZipCode
+        (viewStringField model.options
+            (Text.defaultOptions id)
+            attributes
+            model.zipCode
+        )
+
+
+memoInput : String -> List (Attribute Text.Msg) -> Model -> Html Msg
+memoInput id attributes model =
+    App.map UpdateMemo
+        (viewStringField model.options
+            { id = id
+            , maxLength = Just 39
+            }
+            attributes
+            model.memo
         )
 
 

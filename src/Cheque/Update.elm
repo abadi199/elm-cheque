@@ -29,6 +29,7 @@ type Msg
     | UpdateCountry Text.Msg
     | UpdateZipCode Text.Msg
     | UpdateDate Text.Msg
+    | UpdateMemo Text.Msg
 
 
 {-| The Elm Architect's update function.
@@ -81,6 +82,11 @@ update msg model =
 
         UpdateDate textMsg ->
             ( { model | date = updateStringInput textMsg model.date }
+            , Cmd.none
+            )
+
+        UpdateMemo textMsg ->
+            ( { model | memo = updateStringInput textMsg model.memo }
             , Cmd.none
             )
 
